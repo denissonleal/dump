@@ -12,7 +12,4 @@
 */
 
 Route::controller('dump', 'DumpController');
-
-Route::get('/', function() {
-	return '...';
-});
+Route::controller('/', 'HomeController');
