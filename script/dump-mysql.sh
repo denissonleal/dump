@@ -6,9 +6,9 @@ FILE_DUMP=dump-$(hostname)-$(date +%Y-%m-%d-%H-%M-%S)
 URL=http://dump.sysvale.com/dump?hostname=$(hostname)
 USER=
 PASSWORD=
-TABLE=
+DB=
 
-mysqldump --databases $TABLE -u $USER -p$PASSWORD --compact --lock-tables > $FILE_DUMP.sql
+mysqldump --databases $DB -u $USER -p$PASSWORD --compact --lock-tables > $FILE_DUMP.sql
 7z a $FILE_DUMP.7z $FILE_DUMP.sql
 rm $FILE_DUMP.sql
 curl -F "file=@./$FILE_DUMP.7z" $URL
