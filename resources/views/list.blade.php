@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name = "viewport" content = "user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
 		<meta charset="utf-8">
 		<title>Dump</title>
 	</head>
 	<body>
-		<h3>List of Dumps</h3>
+		<h3>List of last dumps</h3>
 		<ul>
 			@foreach($hostnames as $hostname)
 				<li>
