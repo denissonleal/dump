@@ -8,10 +8,11 @@ class HomeController extends Controller
 {
   public function anyIndex()
   {
-    $hostnames = Hostname::all();
+    $hostnames = Hostname::orderBy('name')->get();
     foreach ($hostnames as $hostname) {
-      $hostname->dumps;
+      $hostname->dump = $hostname->dumps()->orderBy('created_at', 'desc')->first();
     }
-		dump($hostnames->toArray());
+    // dd($hostnames->toArray());
+    return view('list', ['hostnames' => $hostnames]);
   }
 }
