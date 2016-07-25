@@ -3,7 +3,7 @@
 date +%Y-%m-%d\ %H:%M:%S
 
 FILE_DUMP=dump-$(hostname)-$(date +%Y-%m-%d-%H-%M-%S)
-URL=http://dump.sysvale.com/dump?hostname=$(hostname)
+URL=http://localhost:8000/dump?hostname=$(hostname)
 USER=
 PASSWORD=
 DB=

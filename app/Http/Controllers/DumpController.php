@@ -12,6 +12,7 @@ class DumpController extends Controller
 {
   public function anyIndex(Request $in)
   {
+    // sleep(5);
     if ( $in->hasFile('file') && $in->file('file')->isValid() ) {
       $hostname = Hostname::firstOrCreate([ 'name' => $in->hostname ]);
 
@@ -25,5 +26,40 @@ class DumpController extends Controller
       // ]);
     }
     return '#';
+  }
+
+  public function anySplit(Request $in)
+  {
+    if ( $in->hasFile('file') && $in->file('file')->isValid() ) {
+      $hostname = Hostname::firstOrCreate([ 'name' => $in->hostname ]);
+
+      $dump = $hostname->dumps()->whereName($in->name)->first();
+      if ( !$dump ) {
+        $dump = $hostname->dumps()->create([
+          'name' => $in->name,
+          'hostname_id' => $hostname->id
+        ]);
+
+        mkdir(storage_path("dumps/$hostname->name-$dump->name"));
+      }
+
+      $in->file('file')->move(storage_path("dumps/$hostname->name-$dump->name"),
+                              $in->file('file')->getClientOriginalName());
+
+      return '#';
+    }
+    return 'error';
+  }
+
+  public function anyJoin(Request $in)
+  {
+    $hostname = Hostname::firstOrCreate([ 'name' => $in->hostname ]);
+    $dump = $hostname->dumps()->whereName($in->name)->first();
+    $file = storage_path("dumps/$hostname->name-$dump->name");
+
+    exec("cat $file/* > $file.7z");
+    $dump->size = filesize("$file.7z");
+    $dump->save();
+    exec("rm -r $file");
   }
 }

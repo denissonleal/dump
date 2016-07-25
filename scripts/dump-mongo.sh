@@ -3,7 +3,7 @@
 date +%Y-%m-%d\ %H:%M:%S
 
 FILE_DUMP=dump-$(hostname)-$(date +%Y-%m-%d-%H-%M-%S).7z
-URL=http://dump.sysvale.com/dump?hostname=$(hostname)
+URL=http://localhost:8000/dump?hostname=$(hostname)
 
 mongodump
 7z a $FILE_DUMP dump/
