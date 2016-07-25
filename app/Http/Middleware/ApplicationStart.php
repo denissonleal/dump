@@ -14,9 +14,9 @@ class ApplicationStart
       header('Access-Control-Allow-Origin: *');
     }
     $all = $request->all();
+
     if(isset($all['photo']))  $all['photo'] = str_limit($all['photo']);
-    $q = '/' . (isset($all['q']) ? $all['q'] : '');
-    unset($all['q']);
+    $q = '/' . $request->path();
     unset($all['password']);
 
     Log::info("ACCESS $q", $all);
@@ -27,8 +27,7 @@ class ApplicationStart
   public function terminate($request, $response)
   {
     if ( $response->status() == 200 ) {
-      $q = $request->get('q');
-      $q = '/' . (isset($q) ? $q : '');
+      $q = '/' . $request->path();
 
       Log::info("FINISH $q", [
         'time' => number_format(microtime(true)-$GLOBALS['time_start_application'], 3, '.', ' '),
