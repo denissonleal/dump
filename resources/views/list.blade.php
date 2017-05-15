@@ -28,8 +28,8 @@
 					<tr>
 						<th>#</th>
 						<th>Server</th>
-						<th>Size</th>
-						<th>Date</th>
+						<th align="center">Size</th>
+						<th align="center">Date</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -38,7 +38,7 @@
 						<td>{{ $i+1 }}</td>
 						<td><b>{{ $hostname->name }}</b></td>
 						<td align="right"><i>{{ number_format($hostname->dump->size/1000000., 3, '.', ' ') }}</i> <small>MB</small></td>
-						<td>
+						<td align="center">
 							<small>{{ $hostname->dump->created_at->format('Y-m-') }}</small>{{ $hostname->dump->created_at->format('d') }}
 							<small>{{ $hostname->dump->created_at->format(' H:i:s') }}</small>
 						</td>
