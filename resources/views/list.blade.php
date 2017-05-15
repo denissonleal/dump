@@ -24,10 +24,9 @@
 					<tr>
 						<td>{{ $i+1 }}</td>
 						<td><b>{{ $hostname->name }}</b></td>
-						<td align="right"><i>{{ number_format($hostname->dump->size/1000000., 3, '.', ' ') }}</i> MB</td>
+						<td align="right"><i>{{ number_format($hostname->dump->size/1000000., 3, '.', ' ') }}</i> <small>MB</small></td>
 						<td>
-							<small>{{ $hostname->dump->created_at->format('Y-m-') }}</small>
-							{{ $hostname->dump->created_at->format('d') }}
+							<small>{{ $hostname->dump->created_at->format('Y-m-') }}</small>{{ $hostname->dump->created_at->format('d') }}
 							<small>{{ $hostname->dump->created_at->format(' H:i:s') }}</small>
 						</td>
 					</tr>
