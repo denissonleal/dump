@@ -5,6 +5,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="refresh" content="1800">
 		<title>Dump</title>
+		<link rel="shortcut icon" href="favicon.png">
 	</head>
 	<body>
 		<div style="text-align: center;">
@@ -24,7 +25,11 @@
 						<td>{{ $i+1 }}</td>
 						<td><b>{{ $hostname->name }}</b></td>
 						<td align="right"><i>{{ number_format($hostname->dump->size/1000000., 3, '.', ' ') }}</i> MB</td>
-						<td><small>{{ $hostname->dump->created_at->format('Y-m-d H:i:s') }}</small></td>
+						<td>
+							<small>{{ $hostname->dump->created_at->format('Y-m-') }}</small>
+							{{ $hostname->dump->created_at->format('d') }}
+							<small>{{ $hostname->dump->created_at->format(' H:i:s') }}</small>
+						</td>
 					</tr>
 					@endforeach
 				</tbody>
