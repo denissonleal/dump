@@ -6,11 +6,24 @@
 		<meta http-equiv="refresh" content="1800">
 		<title>Dump</title>
 		<link rel="shortcut icon" href="favicon.png">
+		<style media="screen">
+		body {
+			background-color: #121212;
+			color: #dadada;
+		}
+		table {
+			text-align: left;
+			width: 500px;
+			margin: auto;
+			max-width: 90%;
+		}
+		</style>
 	</head>
 	<body>
 		<div style="text-align: center;">
 			<h3>List of last dumps</h3>
-			<table style="text-align: left; width: 500px; margin: auto; max-width: 90%;">
+			<br>
+			<table>
 				<thead>
 					<tr>
 						<th>#</th>
