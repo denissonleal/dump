@@ -47,7 +47,7 @@
 				</tbody>
 			</table>
 			<p>
-				Free space {{ $free }}
+				Free space {{ $free }}. Updated: {{ date('Y-m-d H:i:s') }}
 			</p>
 
 			{{-- <ul style="text-align: left; width: 500px; margin: auto; max-width: 90%;">
