@@ -37,10 +37,14 @@
 					<tr>
 						<td>{{ $i+1 }}</td>
 						<td><b>{{ $hostname->name }}</b></td>
-						<td align="right"><i>{{ number_format($hostname->dump->size/1000000., 3, '.', ' ') }}</i> <small>MB</small></td>
+						<td align="right"><i>{{ $hostname->dump ? number_format($hostname->dump->size/1000000., 3, '.', ' ') : '-' }}</i> <small>MB</small></td>
 						<td align="center">
-							<small>{{ $hostname->dump->created_at->format('Y-m-') }}</small>{{ $hostname->dump->created_at->format('d') }}
-							<small>{{ $hostname->dump->created_at->format(' H:i:s') }}</small>
+							@if ( $hostname->dump )
+								<small>{{ $hostname->dump->created_at->format('Y-m-') }}</small>{{ $hostname->dump->created_at->format('d') }}
+								<small>{{ $hostname->dump->created_at->format(' H:i:s') }}</small>
+							@else
+								-
+							@endif
 						</td>
 					</tr>
 					@endforeach
