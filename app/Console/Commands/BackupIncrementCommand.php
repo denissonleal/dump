@@ -50,7 +50,9 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 			if ( $response == 1 ) {
 				$increment->last_id = $photo['_id']->{'$id'};
 				$increment->save();
+				return true;
 			}
+			return false;
 		}
 		// dump(DB::connection("conn-$name")->collection('photos')->raw()->count());
 	}
@@ -67,11 +69,11 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 			foreach ($list_dbs as $db) {
 				$name = $db['name'];
 				if ( !in_array($name, ['admin', 'local', $dbdefault]) ) {
-					$i = 150;
-					do {
-						$this->send($name);
-					} while (str_contains($name, 'petrolina') && $i-- > 0);
+					$this->send($name);
 				}
+			}
+			while ( ((int) date('s')) < 50 && $this->send('esus-petrolina-pe') ) {
+				echo "leftover :)\n";
 			}
 			Storage::delete('using');
 		}
