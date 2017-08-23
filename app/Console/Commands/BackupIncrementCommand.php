@@ -59,8 +59,10 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 
 	public function handle()
 	{
+		$t0 = microtime(true);
 		echo date('Y-m-d H:i:s') . "\n";
 		if ( !Storage::has('using') ) {
+			$count = 0;
 			Storage::put('using', 1);
 			$dbdefault = config('database.connections.'.config('database.default').'.database');
 			$list_dbs = DB::getMongoClient()->listDBs();
@@ -71,6 +73,7 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 				$name = $db['name'];
 				if ( !in_array($name, ['admin', 'local', $dbdefault]) ) {
 					$id = $this->send($name);
+					if ( $id ) $count++;
 					if ( !$leftover_id || ($id && $id < $leftover_id) ) {
 						$leftover_id = $id;
 						$leftover_name = $name;
@@ -78,9 +81,9 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 				}
 			}
 
-			$count = 0;
-			while ( ((int) date('s')) < 50 && $leftover_id && $this->send($leftover_name) ) {
-				echo ++$count . " leftover :)\n";
+			while ( ( 60*$count > ceil(microtime(true)-$t0)*($count+2) ) && $count++ && $this->send($leftover_name) ) {
+				echo "$count leftover :)\n";
+				// dump([microtime(true)-$t0, $count]);
 			}
 			Storage::delete('using');
 		}
