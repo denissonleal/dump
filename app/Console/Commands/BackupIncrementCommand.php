@@ -29,10 +29,10 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 		]);
 		$increment = Increment::whereDatabase($name)->first();
 		if ( $increment ) {
-			$photo = DB::connection("conn-$name")->collection('photos')->where('_id', '>', $increment->last_id)->first();
+			$photo = DB::connection("conn-$name")->collection('photos')->where('_id', '>', $increment->last_id)->orderBy('_id', 'asc')->first();
 		}
 		else {
-			$photo = DB::connection("conn-$name")->collection('photos')->first();
+			$photo = DB::connection("conn-$name")->collection('photos')->orderBy('_id', 'asc')->first();
 			$increment = new Increment;
 			$increment->database = $name;
 		}
