@@ -37,4 +37,16 @@ class HomeController extends Controller
 		}
 		return response('Unauthorized.', 401);
 	}
+
+	public function anyPhoto(Request $in, $database, $id)
+	{
+		$photo = \DB::collection("photos_$database")->find($id);
+		if ( $photo ) {
+			return response($photo['picture']->bin)
+				->header('Content-Type', 'image/jpeg');
+		}
+		else {
+			return 'image not found';
+		}
+	}
 }

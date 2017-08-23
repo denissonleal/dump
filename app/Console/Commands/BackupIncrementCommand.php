@@ -50,10 +50,10 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 			if ( $response == 1 ) {
 				$increment->last_id = $photo['_id']->{'$id'};
 				$increment->save();
-				return true;
+				return $increment->last_id;
 			}
-			return false;
 		}
+		return false;
 		// dump(DB::connection("conn-$name")->collection('photos')->raw()->count());
 	}
 
@@ -66,14 +66,21 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 			$list_dbs = DB::getMongoClient()->listDBs();
 			$list_dbs = isset($list_dbs['databases']) ? $list_dbs['databases'] : [];
 			// dump($list_dbs);
+			$leftover_id = false;
 			foreach ($list_dbs as $db) {
 				$name = $db['name'];
 				if ( !in_array($name, ['admin', 'local', $dbdefault]) ) {
-					$this->send($name);
+					$id = $this->send($name);
+					if ( !$leftover_id || ($id && $id < $leftover_id) ) {
+						$leftover_id = $id;
+						$leftover_name = $name;
+					}
 				}
 			}
-			while ( ((int) date('s')) < 50 && $this->send('esus-petrolina-pe') ) {
-				echo "leftover :)\n";
+
+			$count = 0;
+			while ( ((int) date('s')) < 50 && $leftover_id && $this->send($leftover_name) ) {
+				echo ++$count . " leftover :)\n";
 			}
 			Storage::delete('using');
 		}
