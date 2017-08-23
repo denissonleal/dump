@@ -1,7 +1,10 @@
 <?php namespace App;
 
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
+
 class Hostname extends \Moloquent
 {
+  use SoftDeletes;
   protected $fillable = ['name'];
 
   public function dumps()
