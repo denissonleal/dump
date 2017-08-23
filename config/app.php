@@ -157,6 +157,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Jenssegers\Mongodb\MongodbServiceProvider::class,
+				Ixudra\Curl\CurlServiceProvider::class,
     ],
 
     /*

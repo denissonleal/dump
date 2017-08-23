@@ -24,4 +24,17 @@ class HomeController extends Controller
 			'free' => sprintf('%1.2f %s' , $bytes / pow($base,$class), $si_prefix[$class]),
 		]);
 	}
+
+	public function anyIncrement(Request $in)
+	{
+		if ( $in->key == env('KEYINCREMENT') ) {
+			\DB::collection("photos_$in->database")->insert([
+				'_id' => new \MongoId($in->id),
+				'picture' => new \MongoBinData(base64_decode($in->picture)),
+			]);
+
+			return 1;
+		}
+		return response('Unauthorized.', 401);
+	}
 }
