@@ -66,7 +66,8 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 			$black_list = collect(Storage::has('black_list') ? explode(',', Storage::get('black_list')) : []);
 			$black_list[] = $name;
 			Storage::put('black_list', $black_list->values()->implode(','));
-			while ( $this->send($name) ) echo ++$count ." \n";
+			$count = 0;
+			while ( $this->send($name) ) echo ++$count ." db\n";
 			$black_list = collect(Storage::has('black_list') ? explode(',', Storage::get('black_list')) : []);
 			Storage::put('black_list', $black_list->reject($name)->values()->implode(','));
 		}
