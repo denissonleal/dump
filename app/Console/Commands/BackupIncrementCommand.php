@@ -61,35 +61,40 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 	{
 		$t0 = microtime(true);
 		echo date('Y-m-d H:i:s') . "\n";
-		if ( !Storage::has('using') ) {
+		if ( $this->argument('database') ) {
+			$name = $this->argument('database');
+			$black_list = collect(Storage::has('black_list') ? explode(',', Storage::get('black_list')) : []);
+			$black_list[] = $name;
+			Storage::put('black_list', $black_list->values()->implode(','));
+			while ( $this->send($name) ) echo ++$count ." \n";
+			$black_list = collect(Storage::has('black_list') ? explode(',', Storage::get('black_list')) : []);
+			Storage::put('black_list', $black_list->reject($name)->values()->implode(','));
+		}
+		else if ( !Storage::has('using') ) {
 			Storage::put('using', 1);
 			$count = 0;
-			if ( !$this->argument('database') ) {
-				$dbdefault = config('database.connections.'.config('database.default').'.database');
-				$list_dbs = DB::getMongoClient()->listDBs();
-				$list_dbs = isset($list_dbs['databases']) ? $list_dbs['databases'] : [];
-				// dump($list_dbs);
-				$leftover_id = false;
-				foreach ($list_dbs as $db) {
-					$name = $db['name'];
-					if ( !in_array($name, ['admin', 'local', $dbdefault]) ) {
-						$id = $this->send($name);
-						if ( $id ) $count++;
-						if ( !$leftover_id || ($id && $id < $leftover_id) ) {
-							$leftover_id = $id;
-							$leftover_name = $name;
-						}
+			$dbdefault = config('database.connections.'.config('database.default').'.database');
+			$list_dbs = DB::getMongoClient()->listDBs();
+			$list_dbs = isset($list_dbs['databases']) ? $list_dbs['databases'] : [];
+			$black_list = collect(Storage::has('black_list') ? explode(',', Storage::get('black_list')) : []);
+			$black_list = $black_list->merge(['admin', 'local', $dbdefault]);
+			// dump($list_dbs);
+			$leftover_id = false;
+			foreach ($list_dbs as $db) {
+				$name = $db['name'];
+				if ( !$black_list->contains($name) ) {
+					$id = $this->send($name);
+					if ( $id ) $count++;
+					if ( !$leftover_id || ($id && $id < $leftover_id) ) {
+						$leftover_id = $id;
+						$leftover_name = $name;
 					}
 				}
-
-				while ( ( 60*$count > ceil(microtime(true)-$t0)*($count+2) ) && $count++ && $this->send($leftover_name) ) {
-					echo "$count leftover :)\n";
-					// dump([microtime(true)-$t0, $count]);
-				}
 			}
-			else {
-				$name = $this->argument('database');
-				while ( $this->send($name) ) echo ++$count ." \n";
+
+			while ( ( 60*$count > ceil(microtime(true)-$t0)*($count+2) ) && $count++ && $this->send($leftover_name) ) {
+				echo "$count leftover :)\n";
+				// dump([microtime(true)-$t0, $count]);
 			}
 			Storage::delete('using');
 		}
