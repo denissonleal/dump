@@ -7,7 +7,7 @@ use Ixudra\Curl\Facades\Curl;
 
 class BackupIncrementCommand extends \Illuminate\Console\Command
 {
-	protected $signature = 'backup:increment';
+	protected $signature = 'backup:increment {database?}';
 
 	protected $description = 'backup incremental';
 
@@ -62,28 +62,34 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 		$t0 = microtime(true);
 		echo date('Y-m-d H:i:s') . "\n";
 		if ( !Storage::has('using') ) {
-			$count = 0;
 			Storage::put('using', 1);
-			$dbdefault = config('database.connections.'.config('database.default').'.database');
-			$list_dbs = DB::getMongoClient()->listDBs();
-			$list_dbs = isset($list_dbs['databases']) ? $list_dbs['databases'] : [];
-			// dump($list_dbs);
-			$leftover_id = false;
-			foreach ($list_dbs as $db) {
-				$name = $db['name'];
-				if ( !in_array($name, ['admin', 'local', $dbdefault]) ) {
-					$id = $this->send($name);
-					if ( $id ) $count++;
-					if ( !$leftover_id || ($id && $id < $leftover_id) ) {
-						$leftover_id = $id;
-						$leftover_name = $name;
+			$count = 0;
+			if ( !$this->argument('database') ) {
+				$dbdefault = config('database.connections.'.config('database.default').'.database');
+				$list_dbs = DB::getMongoClient()->listDBs();
+				$list_dbs = isset($list_dbs['databases']) ? $list_dbs['databases'] : [];
+				// dump($list_dbs);
+				$leftover_id = false;
+				foreach ($list_dbs as $db) {
+					$name = $db['name'];
+					if ( !in_array($name, ['admin', 'local', $dbdefault]) ) {
+						$id = $this->send($name);
+						if ( $id ) $count++;
+						if ( !$leftover_id || ($id && $id < $leftover_id) ) {
+							$leftover_id = $id;
+							$leftover_name = $name;
+						}
 					}
 				}
-			}
 
-			while ( ( 60*$count > ceil(microtime(true)-$t0)*($count+2) ) && $count++ && $this->send($leftover_name) ) {
-				echo "$count leftover :)\n";
-				// dump([microtime(true)-$t0, $count]);
+				while ( ( 60*$count > ceil(microtime(true)-$t0)*($count+2) ) && $count++ && $this->send($leftover_name) ) {
+					echo "$count leftover :)\n";
+					// dump([microtime(true)-$t0, $count]);
+				}
+			}
+			else {
+				$name = $this->argument('database');
+				while ( $this->send($name) ) echo ++$count ." \n";
 			}
 			Storage::delete('using');
 		}
