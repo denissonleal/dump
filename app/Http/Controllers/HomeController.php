@@ -30,7 +30,7 @@ class HomeController extends Controller
 	{
 		if ( $in->key == env('KEYINCREMENT') ) {
 			$db = "photos_$in->database";
-			$photo = DB::collection($db)->find($id);
+			$photo = DB::collection($db)->find($in->id);
 			if ( $photo ) {
 				return -1;
 			}
