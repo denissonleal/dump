@@ -3,6 +3,7 @@
 use DB;
 use Storage;
 use App\Increment;
+use App\IncrementError;
 use Ixudra\Curl\Facades\Curl;
 
 class BackupIncrementCommand extends \Illuminate\Console\Command
@@ -28,14 +29,19 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 			]
 		]);
 		$increment = Increment::whereDatabase($name)->first();
-		if ( $increment ) {
+		if ( !$increment ) {
+			$increment = new Increment;
+			$increment->database = $name;
+			$increment->save();
+		}
+
+		if ( $increment && $increment->last_id ) {
 			$photo = DB::connection("conn-$name")->collection('photos')->where('_id', '>', $increment->last_id)->orderBy('_id', 'asc')->first();
 		}
 		else {
 			$photo = DB::connection("conn-$name")->collection('photos')->orderBy('_id', 'asc')->first();
-			$increment = new Increment;
-			$increment->database = $name;
 		}
+
 		if ( $photo && isset($photo['picture']) && isset($photo['picture']->bin) ) {
 			// dd($photo['_id']->{'$id'});
 			// dump($photo['picture']);
@@ -47,11 +53,33 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 				'picture' => base64_encode($photo['picture']->bin),
 			])->asJson()->post();
 			dump($response);
-			if ( $response == 1 ) {
+			if ( $response == 1 || $response ==  -1 ) {
 				$increment->last_id = $photo['_id']->{'$id'};
 				$increment->save();
+
+				if ( $response ==  -1) {
+					$error = new IncrementError;
+					$error->increment_id = $increment->id;
+					$error->photo_id = $increment->last_id;
+					$error->reason = 'Already on the server';
+					$error->save();
+				}
 				return $increment->last_id;
 			}
+		}
+		else if ($photo) {
+			// $increment->last_id = $photo['_id']->{'$id'};
+			// $increment->save();
+
+			$error = new IncrementError;
+			$error->increment_id = $increment->id;
+			$error->photo_id = $increment->last_id;
+			$error->reason = 'Does not have the binary';
+			$error->save();
+			dump($error->reason);
+		}
+		else {
+			dump('no news');
 		}
 		return false;
 		// dump(DB::connection("conn-$name")->collection('photos')->raw()->count());

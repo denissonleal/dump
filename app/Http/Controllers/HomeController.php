@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Hostname;
+use DB;
 
 class HomeController extends Controller
 {
@@ -28,7 +29,12 @@ class HomeController extends Controller
 	public function anyIncrement(Request $in)
 	{
 		if ( $in->key == env('KEYINCREMENT') ) {
-			\DB::collection("photos_$in->database")->insert([
+			$db = "photos_$in->database";
+			$photo = DB::collection($db)->find($id);
+			if ( $photo ) {
+				return -1;
+			}
+			DB::collection($db)->insert([
 				'_id' => new \MongoId($in->id),
 				'picture' => new \MongoBinData(base64_decode($in->picture)),
 			]);
@@ -40,7 +46,7 @@ class HomeController extends Controller
 
 	public function anyPhoto(Request $in, $database, $id)
 	{
-		$photo = \DB::collection("photos_$database")->find($id);
+		$photo = DB::collection("photos_$database")->find($id);
 		if ( $photo ) {
 			return response($photo['picture']->bin)
 				->header('Content-Type', 'image/jpeg');
