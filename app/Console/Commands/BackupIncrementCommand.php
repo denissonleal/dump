@@ -68,8 +68,8 @@ class BackupIncrementCommand extends \Illuminate\Console\Command
 			}
 		}
 		else if ($photo) {
-			// $increment->last_id = $photo['_id']->{'$id'};
-			// $increment->save();
+			$increment->last_id = $photo['_id']->{'$id'};
+			$increment->save();
 
 			$error = new IncrementError;
 			$error->increment_id = $increment->id;
