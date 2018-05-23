@@ -40,6 +40,6 @@ $ php artisan tinker
 ## Test dump
 
 run it
-```
-sh dump-split-mongo.sh
+```shell-session
+$ sh dump-split-mongo.sh
 ```
