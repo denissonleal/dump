@@ -12,4 +12,10 @@
 */
 
 Route::controller('dump', 'DumpController');
+Route::any('/upload', 'UploadDatabaseController@upload');
+Route::post('/upload/script', 'UploadDatabaseController@script');
+
 Route::controller('/', 'HomeController');
+
+
+

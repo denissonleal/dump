@@ -55,4 +55,5 @@ class HomeController extends Controller
 			return 'image not found';
 		}
 	}
+
 }
