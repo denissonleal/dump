@@ -13,7 +13,8 @@
 
 Route::controller('dump', 'DumpController');
 Route::any('/upload', 'UploadDatabaseController@upload');
-Route::post('/upload/script', 'UploadDatabaseController@script');
+Route::post('/upload/script', 'UploadDatabaseController@copier');
+Route::post('/upload/bases', 'UploadDatabaseController@base');
 
 Route::controller('/', 'HomeController');
 

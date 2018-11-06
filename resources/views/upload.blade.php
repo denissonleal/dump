@@ -33,24 +33,23 @@
 				</div>
 
 				<form method="POST" id="migration-form">
-					<label for="cities-select">Cidades</label>
+					
 					<div class="form-group">
-						<select name="cities[]" id="cities-select" multiple required aria-placeholder="">
-							@foreach ($cities as $city)
-								<option value="{{ $city }}">{{ $city }}</option>
-							@endforeach
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="inputGroupSelect04">Data</label>
+						<label for="date-select">Data</label>
 						<div class="input-group">
-							<select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon" name="bases" required>
+							<select class="custom-select" id="date-select" aria-label="Example select with button addon" name="bases" required>
 								<option selected disabled>Escolha a data do backup</option>
 								@foreach ($dates as $key => $date)
-									<option value="{{ $bases[$key] }}:{{ $date }}">{{ $date }}</option>
+									<option value="{{ $bases[$key] }}:{{ $date }}">{{ date('d/m/Y',strtotime($date)) }}</option>
 								@endforeach
 							</select>
 						</div>
+					</div>
+					<label for="cities-select">Cidades</label>
+					<div class="form-group">
+						<select name="cities[]" id="cities-select" multiple required aria-placeholder="">
+							
+						</select>
 					</div>
 					<div class="form-group d-flex justify-content-center" id="loading">
 						<button type="submit" class="btn btn-primary btn-lg btn-block">Copiar</button>

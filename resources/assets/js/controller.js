@@ -1,11 +1,15 @@
 // // $('#select-beast').selectize();
+
 $(function () {
 	// console.log("opa", $('#cities-select'));
-	$('#cities-select').selectize({
+	
+	var select = $('#cities-select').selectize({
 		create:true,
-		placeholder:'Escolha as cidades a serem adicionadas'
-	});
-
+		placeholder:'Escolha as cidades a serem adicionadas',
+		
+	})[0].selectize;
+	// console.log(select);
+	// select.addOption({value:'t', text:'testando'});
 	$("#migration-form").submit(function (event) {
 		event.preventDefault();
 		$("#loading").html(`
@@ -40,5 +44,21 @@ $(function () {
 		);
 		
 	});
-});
 
+	$("#date-select").change(function (event) {
+		event.preventDefault();
+		date = $(this).val();
+		console.log(date);
+		$.post('/upload/bases',
+		{
+			date : date,
+		})
+		.done(
+			function (response) {
+				for (var i in response.cities) {
+					select.addOption({ value: response.cities[i], text: response.cities[i] });
+				}
+			}
+		);
+	});
+});
