@@ -29,7 +29,7 @@ $(function () {
 					$('#migration-form').trigger('reset');
 					$("#cities-select")[0].selectize.clear();
 					$("#loading").html(`
-						<button type="submit" class="btn btn-primary btn-lg btn-block">Importar</button>
+						<button type="submit" class="btn btn-primary btn-lg btn-block">Copiar</button>
 					`);
 					$('#response').html(`
 						<div class="alert alert-success alert-dismissible fade show" role="alert">
