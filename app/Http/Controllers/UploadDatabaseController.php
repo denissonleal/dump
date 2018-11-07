@@ -10,7 +10,6 @@ class UploadDatabaseController extends Controller
 {
 	public function upload()
 	{
-		// $d = '2018-10-24';
 		$zips = glob(base_path('storage/dumps/') . 'cidade-saudavel*.7z', GLOB_BRACE);
 		$dates_zips = array();
 		foreach ($zips as $key => $value) {
@@ -29,7 +28,7 @@ class UploadDatabaseController extends Controller
 		$cmd_unzip = "7z x $file_path[0] dump/$dumps";
 		$results_command_zip = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_unzip}");
 		foreach ($request->cities as $value) {
-			$cmd_mongo =  "mongorestore --host 10.0.0.12 --db $value-$file_path[1] " . base_path("storage/dumps/dump/{$value}");
+			$cmd_mongo = "mongorestore --host 10.0.0.12 --db $value-$file_path[1] " . base_path("storage/dumps/dump/{$value}");
 			$results_command_mongo = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_mongo}");
 		}
 
@@ -45,7 +44,7 @@ class UploadDatabaseController extends Controller
 		$zips = glob(base_path('storage/dumps/') . 'cidade-saudavel*.7z', GLOB_BRACE);
 		$zip = null;
 		foreach ($zips as $key => $value) {
-			if(strpos($value, $file_path[1])){
+			if (strpos($value, $file_path[1])) {
 				$zip = $value;
 				break;
 			}
