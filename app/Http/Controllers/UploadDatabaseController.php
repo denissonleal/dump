@@ -16,24 +16,27 @@ class UploadDatabaseController extends Controller
 			preg_match('/cidade-saudavel-file-(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}-\d{2}\.7z/', $value, $matches);
 			array_push($dates_zips, $matches[1]);
 		}
-
 		return view('upload')->with('dates', $dates_zips)
 							->with('bases', $zips);
 	}
 
 	public function copier(Request $request)
 	{	
-		$file_path = explode(':', $request->bases);
-		$dumps = implode(' dump/', $request->cities);
-		$cmd_unzip = "7z x $file_path[0] dump/$dumps";
-		$results_command_zip = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_unzip}");
-		foreach ($request->cities as $value) {
-			$cmd_mongo = "mongorestore --host 10.0.0.12 --db $value-$file_path[1] " . base_path("storage/dumps/dump/{$value}");
-			$results_command_mongo = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_mongo}");
+		if (env('UPLOAD_PASSWORD') == $request->password) {
+			$file_path = explode(':', $request->bases);
+			$dumps = implode(' dump/', $request->cities);
+			$cmd_unzip = "7z x $file_path[0] dump/$dumps";
+			$results_command_zip = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_unzip}");
+			foreach ($request->cities as $value) {
+				$cmd_mongo = "mongorestore --host 10.0.0.12 --db $value-$file_path[1] " . base_path("storage/dumps/dump/{$value}");
+				$results_command_mongo = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_mongo}");
+			}
+	
+			$results_command_rm = shell_exec('cd ' . base_path('storage/dumps') . ";rm dump/ -R");
+			return 'true';
 		}
 
-		echo 'true';
-		$results_command_rm = shell_exec('cd ' . base_path('storage/dumps') . ";rm dump/ -R");
+		return 'false';
 
 
 	}

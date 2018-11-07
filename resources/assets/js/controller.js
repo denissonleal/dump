@@ -15,12 +15,14 @@ $(function () {
 		$("#loading").html(`
 			<div class="square"></div>
 		`);
+		$("#response").html('');
 		// console.log($("select[name$='cities[]']").val());
 		$.post('/upload/script',
 		{
 			'_token': $('meta[name=csrf-token]').attr('content'),
 			cities: $("select[name$='cities[]']").val(),
-			bases: $("select[name$='bases']").val()
+			bases: $("select[name$='bases']").val(),
+			password: $("input[name$='password']").val()
 		})
 		.done(
 			function (response) {
@@ -34,6 +36,18 @@ $(function () {
 					$('#response').html(`
 						<div class="alert alert-success alert-dismissible fade show" role="alert">
 							<strong>Operação finalizada!</strong> Verifique o servidor local.
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+					`);
+				} else if (response ==  'false') {
+					$("#loading").html(`
+						<button type="submit" class="btn btn-primary btn-lg btn-block">Copiar</button>
+					`);
+					$('#response').html(`
+						<div class="alert alert-danger alert-dismissible fade show" role="alert">
+							<strong>Senha de autorização incorreta!</strong>
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>

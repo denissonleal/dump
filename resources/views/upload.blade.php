@@ -51,6 +51,10 @@
 							
 						</select>
 					</div>
+					<div class="form-group">
+							<label for="password">Senha de Autorização</label>							
+							<input type="password" class="form-control" placeholder="Entre com a senha de autorização" aria-label="Username" aria-describedby="basic-addon1" name="password" id="password" required>
+					</div>
 					<div class="form-group d-flex justify-content-center" id="loading">
 						<button type="submit" class="btn btn-primary btn-lg btn-block">Copiar</button>
 					</div>
