@@ -1,0 +1,19 @@
+.teste {
+  width: 500px; }
+
+@keyframes spinning {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(180deg); } }
+
+.square {
+  width: 50px;
+  height: 50px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #999 #ccc;
+  border-radius: 50px;
+  animation: spinning 0.75s infinite linear; }
+
+/*# sourceMappingURL=app.css.map */
