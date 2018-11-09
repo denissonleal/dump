@@ -1,22 +1,16 @@
-// // $('#select-beast').selectize();
-
 $(function () {
-	// console.log("opa", $('#cities-select'));
 	
 	var select = $('#cities-select').selectize({
 		create:true,
 		placeholder:'Escolha as cidades a serem adicionadas',
 		
 	})[0].selectize;
-	// console.log(select);
-	// select.addOption({value:'t', text:'testando'});
 	$("#migration-form").submit(function (event) {
 		event.preventDefault();
 		$("#loading").html(`
 			<div class="square"></div>
 		`);
 		$("#response").html('');
-		// console.log($("select[name$='cities[]']").val());
 		$.post('/upload/script',
 		{
 			'_token': $('meta[name=csrf-token]').attr('content'),
