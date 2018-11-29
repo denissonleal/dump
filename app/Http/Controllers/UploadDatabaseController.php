@@ -10,7 +10,7 @@ class UploadDatabaseController extends Controller
 {
 	public function upload()
 	{
-		$zips = glob(base_path('storage/dumps/') . 'cidade-saudavel*.7z', GLOB_BRACE);
+		$zips = glob(base_path(env('LOCAL_DUMP')) . 'cidade-saudavel*.7z', GLOB_BRACE);
 		$dates_zips = array();
 		foreach ($zips as $key => $value) {
 			preg_match('/cidade-saudavel-file-(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}-\d{2}\.7z/', $value, $matches);
@@ -26,13 +26,13 @@ class UploadDatabaseController extends Controller
 			$file_path = explode(':', $request->bases);
 			$dumps = implode(' dump/', $request->cities);
 			$cmd_unzip = "7z x $file_path[0] dump/$dumps";
-			$results_command_zip = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_unzip}");
+			$results_command_zip = shell_exec('cd ' . base_path(env('LOCAL_DUMP')) . ";{$cmd_unzip}");
 			foreach ($request->cities as $value) {
-				$cmd_mongo = "mongorestore --host 10.0.0.12 --db $value-$file_path[1] " . base_path("storage/dumps/dump/{$value}");
-				$results_command_mongo = shell_exec('cd ' . base_path('storage/dumps') . ";{$cmd_mongo}");
+				$cmd_mongo = "mongorestore --host " . env('SERVE_HOST') . "--db $value-$file_path[1] " . base_path("storage/dumps/dump/{$value}");
+				$results_command_mongo = shell_exec('cd ' . base_path(env('LOCAL_DUMP')) . ";{$cmd_mongo}");
 			}
 	
-			$results_command_rm = shell_exec('cd ' . base_path('storage/dumps') . ";rm dump/ -R");
+			$results_command_rm = shell_exec('cd ' . base_path(env('LOCAL_DUMP')) . ";rm dump/ -R");
 			return 'true';
 		}
 
@@ -44,7 +44,7 @@ class UploadDatabaseController extends Controller
 	public function base(Request $request)
 	{
 		$file_path = explode(':', $request->date);
-		$zips = glob(base_path('storage/dumps/') . 'cidade-saudavel*.7z', GLOB_BRACE);
+		$zips = glob(base_path(env('LOCAL_DUMP')) . 'cidade-saudavel*.7z', GLOB_BRACE);
 		$zip = null;
 		foreach ($zips as $key => $value) {
 			if (strpos($value, $file_path[1])) {
